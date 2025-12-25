@@ -11,6 +11,8 @@ interface BlinkingTextProps {
     minInterval?: number;
     /** Maximum time between glitches in ms */
     maxInterval?: number;
+    /** Force animation even if user prefers reduced motion */
+    forceAnimation?: boolean;
 }
 
 // ASCII-only glitch characters (consistent width in monospace fonts)
@@ -26,95 +28,89 @@ export function BlinkingText({
     scrambleIntensity = 0.05,
     minInterval = 800,
     maxInterval = 3000,
+    forceAnimation = false,
 }: BlinkingTextProps) {
-    const [displayChars, setDisplayChars] = useState<string[]>(() => text.split(""));
-    const [glitchingIndices, setGlitchingIndices] = useState<Set<number>>(new Set());
-    const [isClient, setIsClient] = useState(false);
-    const originalChars = useRef<string[]>(text.split(""));
-    const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const [displayText, setDisplayText] = useState(text);
+    const [isMounted, setIsMounted] = useState(false);
+    const animationRef = useRef<{ cancel: boolean }>({ cancel: false });
 
-    // Update original chars when text changes
+    // Ensure we're on the client
     useEffect(() => {
-        originalChars.current = text.split("");
-        setDisplayChars(text.split(""));
-    }, [text]);
-
-    useEffect(() => {
-        setIsClient(true);
+        setIsMounted(true);
     }, []);
 
-    // Random glitch burst effect
+    // Update display text when prop changes
     useEffect(() => {
-        if (!isClient) return;
+        setDisplayText(text);
+    }, [text]);
 
-        const chars = originalChars.current;
+    // Main glitch effect
+    useEffect(() => {
+        if (!isMounted) return;
 
-        // Get scrambleable indices (skip spaces)
+        // Check for reduced motion preference (skip if forceAnimation is true)
+        if (!forceAnimation && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+            return;
+        }
+
+        const controller = { cancel: false };
+        animationRef.current = controller;
+
+        const chars = text.split("");
         const scrambleableIndices = chars
             .map((char, idx) => (char !== " " ? idx : -1))
-            .filter(idx => idx !== -1);
+            .filter((idx): idx is number => idx !== -1);
 
         if (scrambleableIndices.length === 0) return;
 
         const numToScramble = Math.max(1, Math.floor(scrambleableIndices.length * scrambleIntensity));
 
-        const triggerGlitch = () => {
-            // Pick random indices for this glitch burst
-            const shuffled = [...scrambleableIndices].sort(() => Math.random() - 0.5);
-            const indicesToGlitch = new Set(shuffled.slice(0, numToScramble));
+        const runGlitchCycle = async () => {
+            while (!controller.cancel) {
+                // Wait for random interval before next glitch
+                const waitTime = minInterval + Math.random() * (maxInterval - minInterval);
+                await new Promise(resolve => setTimeout(resolve, waitTime));
 
-            setGlitchingIndices(indicesToGlitch);
+                if (controller.cancel) break;
 
-            // Glitch duration: very fast burst (100-300ms)
-            const glitchDuration = 100 + Math.random() * 200;
+                // Pick random characters to glitch
+                const shuffled = [...scrambleableIndices].sort(() => Math.random() - 0.5);
+                const indicesToGlitch = new Set(shuffled.slice(0, numToScramble));
 
-            // Number of character rotations during the glitch
-            const rotations = Math.floor(glitchDuration / 30);
-            let rotationCount = 0;
+                // Glitch burst: 3-10 rapid changes
+                const burstCount = 3 + Math.floor(Math.random() * 7);
 
-            // Fast character rotation during glitch
-            const rotationInterval = setInterval(() => {
-                rotationCount++;
-
-                setDisplayChars(prev => {
-                    const newChars = [...prev];
+                for (let i = 0; i < burstCount && !controller.cancel; i++) {
+                    const newChars = [...chars];
                     indicesToGlitch.forEach(idx => {
                         newChars[idx] = getRandomChar();
                     });
-                    return newChars;
-                });
-
-                if (rotationCount >= rotations) {
-                    clearInterval(rotationInterval);
-
-                    // Restore original characters
-                    setDisplayChars([...chars]);
-                    setGlitchingIndices(new Set());
-
-                    // Schedule next glitch at random interval
-                    const nextDelay = minInterval + Math.random() * (maxInterval - minInterval);
-                    timeoutRef.current = setTimeout(triggerGlitch, nextDelay);
+                    setDisplayText(newChars.join(""));
+                    await new Promise(resolve => setTimeout(resolve, 30));
                 }
-            }, 30);
-        };
 
-        // Start first glitch after a random delay
-        const initialDelay = Math.random() * 1000;
-        timeoutRef.current = setTimeout(triggerGlitch, initialDelay);
-
-        return () => {
-            if (timeoutRef.current) {
-                clearTimeout(timeoutRef.current);
+                // Restore original text
+                if (!controller.cancel) {
+                    setDisplayText(text);
+                }
             }
         };
-    }, [isClient, scrambleIntensity, minInterval, maxInterval]);
+
+        runGlitchCycle();
+
+        return () => {
+            controller.cancel = true;
+        };
+    }, [isMounted, text, scrambleIntensity, minInterval, maxInterval, forceAnimation]);
 
     return (
         <p className={className}>
-            {displayChars.map((char, index) => {
-                const isGlitching = glitchingIndices.has(index);
+            {/* Screen reader accessible text (hidden visually) */}
+            <span className="sr-only">{text}</span>
 
-                return (
+            {/* Visual glitch text (hidden from screen readers) */}
+            <span aria-hidden="true">
+                {displayText.split("").map((char, index) => (
                     <span
                         key={index}
                         style={{
@@ -124,8 +120,11 @@ export function BlinkingText({
                     >
                         {char}
                     </span>
-                );
-            })}
+                ))}
+            </span>
         </p>
     );
 }
+
+
+

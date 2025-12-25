@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
-@theme {
-    --font-family-proto-mono: var(--font-proto-mono), ui-monospace, monospace;
+body {
+    --font-mono: var(--font-proto-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
 @keyframes blink-text {
