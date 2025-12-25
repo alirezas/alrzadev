@@ -1,5 +1,19 @@
 @import "tailwindcss";
 
-:root {
-    --font-proto-mono: var(--font-proto-mono);
+@theme {
+    --font-family-proto-mono: var(--font-proto-mono), ui-monospace, monospace;
+}
+
+@keyframes blink-text {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.3;
+    }
+
+    100% {
+        opacity: 1;
+    }
 }
