@@ -1,0 +1,17 @@
+{
+  "name": "Alireza Sarabchi — Designer & Developer",
+  "short_name": "Alireza Sarabchi",
+  "description": "Multidisciplinary designer and front-end developer with over 15 years of experience.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1c1c1c",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

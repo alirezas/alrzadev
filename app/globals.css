@@ -1,19 +1,41 @@
 @import "tailwindcss";
 
-body {
-    --font-mono: var(--font-proto-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-@keyframes blink-text {
-    0% {
-        opacity: 1;
-    }
+body {
+  background: var(--color-white);
+  color: var(--color-neutral-950);
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
-    50% {
-        opacity: 0.3;
-    }
+@media (prefers-color-scheme: dark) {
+  body {
+    background: var(--color-neutral-900);
+    color: var(--color-neutral-100);
+  }
+}
 
-    100% {
-        opacity: 1;
-    }
+::selection {
+  background: var(--color-neutral-950);
+  color: var(--color-white);
+}
+
+@media (prefers-color-scheme: dark) {
+  ::selection {
+    background: var(--color-neutral-100);
+    color: var(--color-neutral-950);
+  }
 }

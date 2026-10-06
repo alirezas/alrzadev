@@ -1,52 +1,59 @@
-import type { Metadata } from "next";
-import localFont from "next/font/local";
+import type { Metadata, Viewport } from "next";
+import { Inter, Newsreader } from "next/font/google";
 import "./globals.css";
 
-const protoMono = localFont({
-  src: [
-    {
-      path: "./fonts/proto-mono/ProtoMono-Light.woff2",
-      weight: "300",
-      style: "normal",
-    },
-    {
-      path: "./fonts/proto-mono/ProtoMono-Regular.woff2",
-      weight: "400",
-      style: "normal",
-    },
-    {
-      path: "./fonts/proto-mono/ProtoMono-Medium.woff2",
-      weight: "500",
-      style: "normal",
-    },
-    {
-      path: "./fonts/proto-mono/ProtoMono-SemiBold.woff2",
-      weight: "600",
-      style: "normal",
-    },
-  ],
-  variable: "--font-proto-mono",
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+  display: "swap",
+  preload: true,
 });
 
-
+const newsreader = Newsreader({
+  variable: "--font-newsreader",
+  subsets: ["latin"],
+  display: "swap",
+  style: "italic",
+  weight: "400",
+  preload: true,
+});
 
 export const metadata: Metadata = {
-  title: "Alireza Sarabchi — Designer & Developer",
-  description: "Multidisciplinary designer and front-end developer with over 15 years of experience in web development, UI/UX, and business development.",
+  title: "Alireza Sarabchi",
+  description:
+    "I craft digital products, from the first idea to the last detail.",
+  authors: [{ name: "Alireza Sarabchi" }],
+  openGraph: {
+    title: "Alireza Sarabchi",
+    description:
+      "I craft digital products, from the first idea to the last detail.",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "Alireza Sarabchi",
+    description:
+      "I craft digital products, from the first idea to the last detail.",
+  },
+  robots: "index, follow",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#171717" },
+  ],
+};
+
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${protoMono.variable} antialiased`}
-      >
-        {children}
-      </body>
+    <html lang="en" className={`${inter.variable} ${newsreader.variable} antialiased`}>
+      <head>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="manifest" href="/site.webmanifest" />
+      </head>
+      <body className="min-h-screen flex flex-col">{children}</body>
     </html>
   );
 }
