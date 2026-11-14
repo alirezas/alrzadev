@@ -89,3 +89,16 @@ em { color: var(--bright); }
 @media (prefers-reduced-motion: no-preference) and (forced-colors: none) {
   .word.glitch { animation: word-glitch 140ms steps(1) both; }
 }
+
+.crt-filter {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.crt-text { filter: url("#crt-curve"); }
+
+@media (max-width: 600px), (forced-colors: active) {
+  .crt-text { filter: none; }
+}
