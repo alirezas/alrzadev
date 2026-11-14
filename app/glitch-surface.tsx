@@ -18,7 +18,7 @@ export default function GlitchSurface({ children }: { children: ReactNode }) {
     function stop() {
       clearTimeout(nextGlitch);
       clearTimeout(resetGlitch);
-      activeWord?.classList.remove("glitch");
+      activeWord?.classList.remove("glitch", "tracking");
       activeWord = undefined;
     }
 
@@ -28,8 +28,9 @@ export default function GlitchSurface({ children }: { children: ReactNode }) {
       nextGlitch = setTimeout(() => {
         activeWord = words![Math.floor(Math.random() * words!.length)];
         activeWord.classList.add("glitch");
-        resetGlitch = setTimeout(schedule, 140);
-      }, 6500 + Math.random() * 11000);
+        if (Math.random() < .2) activeWord.classList.add("tracking");
+        resetGlitch = setTimeout(schedule, 600);
+      }, 14000 + Math.random() * 18000);
     }
 
     motion.addEventListener("change", schedule);

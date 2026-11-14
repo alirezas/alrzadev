@@ -2,7 +2,11 @@ import GlitchSurface from "./glitch-surface";
 
 function words(text: string) {
   return text.split(/(\s+)/).map((part, index) =>
-    /\s/.test(part) ? part : <span className="word" key={index}>{part}</span>
+    /\s/.test(part) ? part : <span className="word" key={index}>
+      {part}
+      <span className="afterimage" aria-hidden="true">{part}</span>
+      <span className="tracking-slice" aria-hidden="true">{part}</span>
+    </span>
   );
 }
 
@@ -13,7 +17,12 @@ export default function Home() {
         <defs>
           <filter id="crt-curve" x="-5%" y="-5%" width="110%" height="110%" colorInterpolationFilters="sRGB">
             <feImage href="/crt-displacement.png" x="-5%" y="-5%" width="110%" height="110%" preserveAspectRatio="none" result="curve" />
-            <feDisplacementMap in="SourceGraphic" in2="curve" scale="20" xChannelSelector="R" yChannelSelector="G" />
+            <feDisplacementMap in="SourceGraphic" in2="curve" scale="20" xChannelSelector="R" yChannelSelector="G" result="curved" />
+            <feGaussianBlur in="curved" stdDeviation="0.45" result="soft" />
+            <feImage href="/crt-focus.png" x="-5%" y="-5%" width="110%" height="110%" preserveAspectRatio="none" result="edgeMask" />
+            <feComposite in="soft" in2="edgeMask" operator="in" result="softEdges" />
+            <feComposite in="curved" in2="edgeMask" operator="out" result="sharpCenter" />
+            <feComposite in="sharpCenter" in2="softEdges" operator="arithmetic" k2="1" k3="1" />
           </filter>
         </defs>
       </svg>

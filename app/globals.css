@@ -37,7 +37,7 @@ em { color: var(--bright); }
 
 @supports (background-clip: text) {
   h1, p {
-    background-image: repeating-linear-gradient(
+    background-image: url("/text-grain.png"), repeating-linear-gradient(
       to bottom,
       currentColor 0 1px,
       color-mix(in srgb, currentColor 91%, transparent) 1px 2px
@@ -65,14 +65,14 @@ em { color: var(--bright); }
 
 @media (prefers-reduced-motion: no-preference) and (forced-colors: none) {
   p {
-    animation: phosphor-drift 12s ease-in-out infinite;
+    animation: phosphor-drift 12s ease-in-out infinite, text-grain 8s steps(1) infinite;
   }
   p:last-child {
     animation-delay: -6s;
   }
 }
 
-.word { display: inline-block; }
+.word { position: relative; display: inline-block; }
 
 @keyframes word-glitch {
   0%, 100% { transform: translateX(0); }
@@ -101,4 +101,75 @@ em { color: var(--bright); }
 
 @media (max-width: 600px), (forced-colors: active) {
   .crt-text { filter: none; }
+}
+
+.afterimage {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  user-select: none;
+  opacity: 0;
+  color: #86caff;
+  -webkit-text-fill-color: #86caff;
+  text-shadow: 0 0 3px #86caff80;
+}
+
+@keyframes phosphor-afterimage {
+  0%, 18% { opacity: 0; transform: translateX(0); }
+  24% { opacity: .24; transform: translateX(1.2px); }
+  45% { opacity: .12; transform: translateX(1.5px); }
+  100% { opacity: 0; transform: translateX(1.8px); }
+}
+
+@keyframes text-grain {
+  0%, 100% { background-position: 0 0, 0 0; }
+  25% { background-position: 19px 13px, 0 0; }
+  50% { background-position: -11px 29px, 0 0; }
+  75% { background-position: 31px -17px, 0 0; }
+}
+
+@media (prefers-reduced-motion: no-preference) and (forced-colors: none) {
+  h1 { animation: text-grain 8s steps(1) infinite; }
+  .word.glitch .afterimage {
+    animation: phosphor-afterimage 600ms ease-out both;
+  }
+}
+
+@keyframes crt-warmup {
+  from {
+    opacity: .35;
+    filter: brightness(.75) blur(.55px);
+  }
+  to {
+    opacity: 1;
+    filter: brightness(1) blur(0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) and (forced-colors: none) {
+  main { animation: crt-warmup 550ms ease-out both; }
+}
+
+.tracking-slice {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  user-select: none;
+  opacity: 0;
+  clip-path: inset(43% 0 43% 0);
+  color: var(--bright);
+  -webkit-text-fill-color: var(--bright);
+  text-shadow: -.5px 0 #8cdaff80;
+}
+
+@keyframes tracking-slip {
+  0%, 100% { opacity: 0; transform: translateX(0); }
+  20%, 45% { opacity: .55; transform: translateX(2px); }
+  65% { opacity: .3; transform: translateX(-1px); }
+}
+
+@media (prefers-reduced-motion: no-preference) and (forced-colors: none) {
+  .word.tracking .tracking-slice {
+    animation: tracking-slip 120ms steps(1) both;
+  }
 }
