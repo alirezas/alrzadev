@@ -1,21 +1,14 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Newsreader } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
+const plex = localFont({
+  src: [
+    { path: "./fonts/ibm-plex-mono.ttf", weight: "400", style: "normal" },
+    { path: "./fonts/ibm-plex-mono-italic.ttf", weight: "400", style: "italic" },
+  ],
+  variable: "--font-plex",
   display: "swap",
-  preload: true,
-});
-
-const newsreader = Newsreader({
-  variable: "--font-newsreader",
-  subsets: ["latin"],
-  display: "swap",
-  style: "italic",
-  weight: "400",
-  preload: true,
 });
 
 export const metadata: Metadata = {
@@ -39,21 +32,18 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#171717" },
-  ],
+  themeColor: "#080b10",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${newsreader.variable} antialiased`}>
+    <html lang="en" className={plex.variable}>
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="manifest" href="/site.webmanifest" />
       </head>
-      <body className="min-h-screen flex flex-col">{children}</body>
+      <body>{children}</body>
     </html>
   );
 }
