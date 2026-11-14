@@ -46,7 +46,20 @@ em { color: var(--bright); }
     -webkit-text-fill-color: transparent;
   }
 }
-::selection { background: #29435a; color: #ecf6ff; }
+::selection {
+  background: rgb(112 202 255 / 28%);
+  color: #f2fbff;
+  -webkit-text-fill-color: #f2fbff;
+  text-shadow: 0 0 3px rgb(153 221 255 / 35%);
+}
+
+@media (forced-colors: active) {
+  ::selection {
+    background: Highlight;
+    color: HighlightText;
+    -webkit-text-fill-color: HighlightText;
+  }
+}
 @media (max-width: 600px) {
   main { padding-top: 100px; }
 }
@@ -187,4 +200,14 @@ em { color: var(--bright); }
 .profile-link:focus-visible {
   outline: 1px solid var(--bright);
   outline-offset: 6px;
+}
+
+@media (hover: hover) and (pointer: fine) and (forced-colors: none) {
+  body {
+    cursor: url("/cursor-crosshair.png") 15 15, crosshair;
+  }
+  h1, p { cursor: url("/cursor-text.png") 15 15, text; }
+  .profile-link {
+    cursor: url("/cursor-crosshair-link.png") 15 15, pointer;
+  }
 }
