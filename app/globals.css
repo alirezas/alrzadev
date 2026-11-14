@@ -173,3 +173,18 @@ em { color: var(--bright); }
     animation: tracking-slip 120ms steps(1) both;
   }
 }
+
+.profile-link {
+  display: inline-block;
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: #60788b;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
+  text-shadow: 0 0 6px #71b5ed28;
+}
+.profile-link:hover { color: var(--bright); }
+.profile-link:focus-visible {
+  outline: 1px solid var(--bright);
+  outline-offset: 6px;
+}

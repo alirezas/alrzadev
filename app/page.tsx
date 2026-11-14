@@ -35,6 +35,9 @@ export default function Home() {
       <p>
         {words("Since 2007, I’ve been designing and building for the web, moving between design, code, research, and business. I like figuring things out, getting into the details, and making ideas real.")}
       </p>
+      <a className="profile-link" href="https://github.com/alirezas">
+        GitHub
+      </a>
       </div>
     </GlitchSurface>
   );
