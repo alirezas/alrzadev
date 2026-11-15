@@ -38,6 +38,10 @@ export default function Home() {
       <a className="profile-link" href="https://github.com/alirezas">
         GitHub
       </a>
+      {" · "}
+      <a className="profile-link" href="https://www.linkedin.com/in/alirezasarabchi/">
+        LinkedIn
+      </a>
       </div>
     </GlitchSurface>
   );
